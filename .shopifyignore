@@ -4,6 +4,9 @@ config/settings_data.json
 # Don't push template JSON - prevents resetting Admin layout arrangements  
 templates/*.json
 
+# Don't push local deployment helpers
+scripts/*.sh
+
 # Don't push other temporary files
 node_modules/
 .DS_Store

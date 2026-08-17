@@ -18,6 +18,21 @@
 
 ## ✅ Correct Deployment Process
 
+### Use the Protected LIVE Deploy Script
+
+The project includes a guarded deploy script. It refuses to run if the
+settings/layout exclusions are missing and always passes both `--nodelete` and
+explicit `--ignore` patterns to Shopify CLI:
+
+```bash
+cd /Users/user/Documents/BridgeCustom/Theme/bc
+./scripts/push-live.sh
+```
+
+Use this script for LIVE deploys instead of calling `shopify theme push`
+directly. It protects the Admin-configured values in `config/settings_data.json`
+and the Theme Editor layout files in `templates/*.json`.
+
 ### Push to LIVE Theme (Recommended)
 ```bash
 cd /Users/user/Documents/BridgeCustom/Theme/bc
