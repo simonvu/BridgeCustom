@@ -58,6 +58,7 @@
             form="FacetFiltersForm--{{ section_id }}-desktop"
             style="display:none!important;position:absolute;opacity:0;pointer-events:none;width:0;height:0;"
             {% if option.value == sort_by %}checked{% endif %}
+            on:change="sorting-filter-component/updateFilterAndSorting"
           >
           <span class="sort-pill__label">{{ short_label }}</span>
         </label>

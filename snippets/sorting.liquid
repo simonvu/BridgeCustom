@@ -131,6 +131,7 @@
                     checked
                   {% endif %}
                   aria-hidden="true"
+                  on:change="sorting-filter-component/updateFilterAndSorting"
                 >
                 <span class="svg-wrapper icon-checkmark sorting-filter__checkmark">
                   {{- 'icon-checkmark.svg' | inline_asset_content -}}
