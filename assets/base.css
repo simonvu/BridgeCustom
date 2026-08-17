@@ -1034,7 +1034,10 @@ ul[product-grid-view='zoom-out'] .product-grid__card > * {
 @media (prefers-reduced-motion: no-preference) {
   :root:active-view-transition-type(product-grid) {
     details[open] floating-panel-component {
-      view-transition-name: panel-content;
+      /* Multiple floating panels can exist at the same time on collection pages,
+         so a single static view-transition-name causes duplicate-name errors.
+         Leave sort/filter popovers out of the product-grid transition system. */
+      view-transition-name: none;
 
       .checkbox *,
       .facets__pill-label {
