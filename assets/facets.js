@@ -141,13 +141,12 @@ class FacetsFormComponent extends Component {
    * @returns {Promise<void>}
    */
   #updateSection() {
-    const viewTransition = !this.closest('dialog');
-
-    if (viewTransition) {
-      return startViewTransition(() => sectionRenderer.renderSection(this.sectionId), ['product-grid']);
-    } else {
-      return sectionRenderer.renderSection(this.sectionId).then(() => {});
-    }
+    // Sort/filter updates on collection/search pages are not safe to animate with
+    // the product-grid view transition. The same transition type is reused while
+    // the section re-renders, and the browser logs duplicate view-transition-name
+    // errors when multiple floating panels / grid items are involved.
+    // Skip transition for this flow to keep filter/sort interactions reliable.
+    return sectionRenderer.renderSection(this.sectionId).then(() => {});
   }
 
   /**
