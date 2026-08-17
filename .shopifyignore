@@ -1,0 +1,5 @@
+# Không đẩy file cấu hình settings - tránh reset các option đã set trên Shopify Admin
+config/settings_data.json
+
+# Không đẩy file template JSON - tránh reset bố cục section đã sắp xếp trên Shopify Admin
+templates/*.json

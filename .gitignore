@@ -1,0 +1,27 @@
+# Node modules
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Shopify specific files
+config/settings_data.json
+templates/*.json
+
+# IDE & Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Environment
+.env
+.env.local
+
+# Shopify CLI
+.theme-store-id
+dist/
+
+# Logs
+*.log

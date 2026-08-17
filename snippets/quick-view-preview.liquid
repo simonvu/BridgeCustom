@@ -1,0 +1,163 @@
+<!-- Quick View Modal -->
+<div id="qv-modal" class="qv-modal" style="display:none;">
+  <div class="qv-overlay" onclick="window._closeQuickView()"></div>
+  <div class="qv-dialog">
+    <div class="qv-header">
+      <span class="qv-header-title">Preview</span>
+      <button type="button" class="qv-close" onclick="window._closeQuickView()" aria-label="Close">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+    </div>
+    <div class="qv-body">
+      <div class="qv-slider-wrap">
+        <div class="qv-slider" id="qv-slider"></div>
+        <button type="button" class="qv-arrow qv-arrow--prev" onclick="window._qvNav(-1)" aria-label="Previous">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        </button>
+        <button type="button" class="qv-arrow qv-arrow--next" onclick="window._qvNav(1)" aria-label="Next">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </button>
+      </div>
+      <!-- Dot indicators -->
+      <div class="qv-dots" id="qv-dots"></div>
+      <a id="qv-link" href="#" class="qv-view-btn">View Product</a>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var imgs=[], idx=0, slider, dots;
+
+  window._openQuickView=function(btn){
+    var raw=btn.getAttribute('data-qv-images')||'';
+    imgs=raw.split(',').filter(Boolean);
+    idx=0;
+    document.getElementById('qv-link').href=btn.getAttribute('data-qv-url')||'#';
+
+    // Build slider slides
+    slider=document.getElementById('qv-slider');
+    dots=document.getElementById('qv-dots');
+    slider.innerHTML='';
+    dots.innerHTML='';
+
+    imgs.forEach(function(src,i){
+      var slide=document.createElement('div');
+      slide.className='qv-slide';
+      var img=document.createElement('img');
+      img.src=src;
+      img.alt='Preview '+(i+1);
+      img.draggable=false;
+      slide.appendChild(img);
+      slider.appendChild(slide);
+
+      // Create dot
+      var dot=document.createElement('button');
+      dot.className='qv-dot'+(i===0?' qv-dot--active':'');
+      dot.setAttribute('aria-label','Image '+(i+1));
+      dot.onclick=(function(index){ return function(){ _goTo(index); }; })(i);
+      dots.appendChild(dot);
+    });
+
+    slider.style.transition='none';
+    slider.style.transform='translateX(0)';
+
+    var m=document.getElementById('qv-modal');
+    m.style.display='flex';
+    document.body.style.overflow='hidden';
+    _updateUI();
+
+    // Force reflow then enable transition
+    slider.offsetHeight;
+    slider.style.transition='transform 300ms cubic-bezier(0.25, 0.1, 0.25, 1)';
+  };
+
+  window._closeQuickView=function(){
+    var m=document.getElementById('qv-modal');
+    m.style.display='none';
+    document.body.style.overflow='';
+  };
+
+  function _goTo(i){
+    idx=i;
+    slider.style.transform='translateX(-'+(idx*100)+'%)';
+    _updateUI();
+  }
+
+  window._qvNav=function(dir){
+    idx+=dir;
+    if(idx<0)idx=imgs.length-1;
+    if(idx>=imgs.length)idx=0;
+    slider.style.transform='translateX(-'+(idx*100)+'%)';
+    _updateUI();
+  };
+
+  function _updateUI(){
+    var prev=document.querySelector('.qv-arrow--prev');
+    var next=document.querySelector('.qv-arrow--next');
+    if(prev)prev.style.display=imgs.length>1?'flex':'none';
+    if(next)next.style.display=imgs.length>1?'flex':'none';
+    // Update dots
+    var allDots=document.querySelectorAll('.qv-dot');
+    allDots.forEach(function(d,i){
+      d.classList.toggle('qv-dot--active',i===idx);
+    });
+    // Hide dots if single image
+    var dotsWrap=document.getElementById('qv-dots');
+    if(dotsWrap)dotsWrap.style.display=imgs.length>1?'flex':'none';
+  }
+
+  // Keyboard
+  document.addEventListener('keydown',function(e){
+    var m=document.getElementById('qv-modal');
+    if(m&&m.style.display==='flex'){
+      if(e.key==='Escape')window._closeQuickView();
+      if(e.key==='ArrowLeft')window._qvNav(-1);
+      if(e.key==='ArrowRight')window._qvNav(1);
+    }
+  });
+
+  // Touch swipe
+  var startX=0,startY=0,isDragging=false,startTime=0;
+  var wrap=document.querySelector('.qv-slider-wrap');
+  if(wrap){
+    wrap.addEventListener('touchstart',function(e){
+      startX=e.touches[0].clientX;
+      startY=e.touches[0].clientY;
+      startTime=Date.now();
+      isDragging=true;
+      slider.style.transition='none';
+    },{passive:true});
+
+    wrap.addEventListener('touchmove',function(e){
+      if(!isDragging)return;
+      var dx=e.touches[0].clientX-startX;
+      var dy=e.touches[0].clientY-startY;
+      // Only horizontal
+      if(Math.abs(dx)>Math.abs(dy)){
+        e.preventDefault();
+        var offset=-(idx*100)+(dx/wrap.offsetWidth)*100;
+        slider.style.transform='translateX('+offset+'%)';
+      }
+    },{passive:false});
+
+    wrap.addEventListener('touchend',function(e){
+      if(!isDragging)return;
+      isDragging=false;
+      var dx=e.changedTouches[0].clientX-startX;
+      var elapsed=Date.now()-startTime;
+      var velocity=Math.abs(dx)/elapsed;
+
+      slider.style.transition='transform 300ms cubic-bezier(0.25, 0.1, 0.25, 1)';
+
+      // Swipe if distance > 40px or velocity > 0.3
+      if(Math.abs(dx)>40||velocity>0.3){
+        if(dx<0&&idx<imgs.length-1) idx++;
+        else if(dx>0&&idx>0) idx--;
+      }
+      slider.style.transform='translateX(-'+(idx*100)+'%)';
+      _updateUI();
+    },{passive:true});
+  }
+})();
+</script>

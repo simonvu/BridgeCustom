@@ -1,0 +1,108 @@
+{%- doc -%}
+  Renders sort options as:
+  - Desktop: inline pill buttons (TrendingCustom style)
+  - Mobile: dropdown select with arrow icon
+  @param {object} results - collection/search results
+  @param {string} sort_by - current sort_by value
+  @param {string} section_id - section ID
+  @param {string} suffix - 'desktop' or 'mobile'
+{%- enddoc -%}
+
+{%- liquid
+  assign sort_options_map = ''
+  for option in results.sort_options
+    case option.value
+      when 'best-selling'
+        assign sort_options_map = sort_options_map | append: option.value | append: '::Best selling||'
+      when 'created-descending'
+        assign sort_options_map = sort_options_map | append: option.value | append: '::New||'
+      when 'price-ascending'
+        assign sort_options_map = sort_options_map | append: option.value | append: '::Price low to high||'
+      when 'price-descending'
+        assign sort_options_map = sort_options_map | append: option.value | append: '::Price high to low||'
+    endcase
+  endfor
+-%}
+
+<sorting-filter-component
+  class="sort-pills"
+  on:change="/updateFilterAndSorting"
+>
+  {%- comment -%} Desktop: pill buttons {%- endcomment -%}
+  <div class="sort-pills__wrapper sort-pills--desktop">
+    {%- for option in results.sort_options -%}
+      {%- liquid
+        assign show = false
+        assign short_label = option.name
+        case option.value
+          when 'best-selling'
+            assign show = true
+            assign short_label = 'Best selling'
+          when 'created-descending'
+            assign show = true
+            assign short_label = 'New'
+          when 'price-ascending'
+            assign show = true
+            assign short_label = 'Price low to high'
+          when 'price-descending'
+            assign show = true
+            assign short_label = 'Price high to low'
+        endcase
+      -%}
+      {%- if show -%}
+        <label class="sort-pill{% if option.value == sort_by %} sort-pill--active{% endif %}">
+          <input
+            type="radio"
+            name="sort_by"
+            value="{{ option.value }}"
+            form="FacetFiltersForm--{{ section_id }}-desktop"
+            style="display:none!important;position:absolute;opacity:0;pointer-events:none;width:0;height:0;"
+            {% if option.value == sort_by %}checked{% endif %}
+          >
+          <span class="sort-pill__label">{{ short_label }}</span>
+        </label>
+      {%- endif -%}
+    {%- endfor -%}
+  </div>
+
+  {%- comment -%} Mobile: dropdown select {%- endcomment -%}
+  <div class="sort-pills--mobile">
+    <div class="sort-mobile-select-wrapper">
+      <select
+        name="sort_by"
+        form="FacetFiltersForm--{{ section_id }}-desktop"
+        class="sort-mobile-select"
+        onchange="this.form && this.form.dispatchEvent(new Event('input', {bubbles: true}))"
+      >
+        {%- for option in results.sort_options -%}
+          {%- liquid
+            assign show = false
+            assign short_label = option.name
+            case option.value
+              when 'best-selling'
+                assign show = true
+                assign short_label = 'Best selling'
+              when 'created-descending'
+                assign show = true
+                assign short_label = 'New'
+              when 'price-ascending'
+                assign show = true
+                assign short_label = 'Price low to high'
+              when 'price-descending'
+                assign show = true
+                assign short_label = 'Price high to low'
+            endcase
+          -%}
+          {%- if show -%}
+            <option value="{{ option.value }}" {% if option.value == sort_by %}selected{% endif %}>
+              {{ short_label }}
+            </option>
+          {%- endif -%}
+        {%- endfor -%}
+      </select>
+      <svg class="sort-mobile-arrow" width="10" height="6" viewBox="0 0 10 6" fill="none">
+        <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+  </div>
+</sorting-filter-component>

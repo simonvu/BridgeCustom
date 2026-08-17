@@ -1,0 +1,242 @@
+{% liquid
+  assign show_rating = block.settings.show_rating
+  assign rating_value = block.settings.rating_value | default: '5.0'
+  assign review_count = block.settings.review_count | default: 0
+  assign show_badge = block.settings.show_badge
+  assign badge_text = block.settings.badge_text | default: 'Best Sellers'
+  assign badge_category = block.settings.badge_category
+  assign show_urgency = block.settings.show_urgency
+  assign urgency_text = block.settings.urgency_text
+  assign urgency_min = block.settings.urgency_min | default: 20
+  assign urgency_max = block.settings.urgency_max | default: 80
+%}
+
+<div class="social-proof" {{ block.shopify_attributes }}>
+
+  {%- if show_rating -%}
+    <div class="social-proof__rating">
+      <div class="social-proof__stars" aria-label="Rating: {{ rating_value }} out of 5">
+        {%- assign rating_float = rating_value | times: 1.0 -%}
+        {%- for i in (1..5) -%}
+          {%- assign half_threshold = i | minus: 0.5 -%}
+          {%- if rating_float >= i -%}
+            <svg class="social-proof__star social-proof__star--full" width="16" height="16" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" fill="#F59E0B"/></svg>
+          {%- elsif rating_float >= half_threshold -%}
+            <svg class="social-proof__star social-proof__star--half" width="16" height="16" viewBox="0 0 24 24"><defs><linearGradient id="half-{{ i }}"><stop offset="50%" stop-color="#F59E0B"/><stop offset="50%" stop-color="#D1D5DB"/></linearGradient></defs><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" fill="url(#half-{{ i }})"/></svg>
+          {%- else -%}
+            <svg class="social-proof__star social-proof__star--empty" width="16" height="16" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" fill="#D1D5DB"/></svg>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+      <span class="social-proof__rating-value">{{ rating_value }}</span>
+      {%- if review_count > 0 -%}
+        <span class="social-proof__review-count">({{ review_count }})</span>
+      {%- endif -%}
+    </div>
+  {%- endif -%}
+
+  {%- if show_badge -%}
+    <div class="social-proof__badge-row">
+      <span class="social-proof__badge">{{ badge_text }}</span>
+      {%- if badge_category != blank -%}
+        <span class="social-proof__badge-category">in {{ badge_category }}</span>
+      {%- endif -%}
+    </div>
+  {%- endif -%}
+
+  {%- if show_urgency -%}
+    <div class="social-proof__urgency">
+      <svg class="social-proof__urgency-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+      {%- if urgency_text != blank -%}
+        <span>{{ urgency_text }}</span>
+      {%- else -%}
+        <span data-social-proof-urgency data-min="{{ urgency_min }}" data-max="{{ urgency_max }}">
+          In demand. <strong data-urgency-count></strong> people bought this in the last 24 hours.
+        </span>
+      {%- endif -%}
+    </div>
+  {%- endif -%}
+
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('[data-social-proof-urgency]').forEach(function(el) {
+      var min = parseInt(el.dataset.min) || 20;
+      var max = parseInt(el.dataset.max) || 80;
+      var count = Math.floor(Math.random() * (max - min + 1)) + min;
+      var countEl = el.querySelector('[data-urgency-count]');
+      if (countEl) countEl.textContent = count;
+    });
+  });
+</script>
+
+{% stylesheet %}
+  .social-proof {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  /* Star Rating */
+  .social-proof__rating {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .social-proof__stars {
+    display: inline-flex;
+    align-items: center;
+    gap: 1px;
+  }
+
+  .social-proof__rating-value {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #F59E0B;
+  }
+
+  .social-proof__review-count {
+    font-size: 0.875rem;
+    color: #0891b2;
+  }
+
+  /* Best Seller Badge */
+  .social-proof__badge-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .social-proof__badge {
+    display: inline-block;
+    padding: 3px 10px;
+    background: #f85606;
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 700;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+  }
+
+  .social-proof__badge-category {
+    font-size: 0.8125rem;
+    color: #374151;
+    font-weight: 500;
+  }
+
+  /* Urgency */
+  .social-proof__urgency {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    padding: 8px 12px;
+    border: 1px dashed #f85606;
+    border-radius: 6px;
+    font-size: 0.8125rem;
+    color: #c2410c;
+    font-style: italic;
+    line-height: 1.4;
+  }
+
+  .social-proof__urgency-icon {
+    flex-shrink: 0;
+    color: #f85606;
+    margin-top: 1px;
+  }
+
+  .social-proof__urgency strong {
+    font-weight: 700;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Social Proof",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "⭐ Star Rating"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_rating",
+      "label": "Show star rating",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "rating_value",
+      "label": "Rating value (e.g. 4.8)",
+      "default": "5.0"
+    },
+    {
+      "type": "number",
+      "id": "review_count",
+      "label": "Number of reviews",
+      "default": 116
+    },
+    {
+      "type": "header",
+      "content": "🏷️ Best Seller Badge"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_badge",
+      "label": "Show best seller badge",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "badge_text",
+      "label": "Badge text",
+      "default": "Best Sellers"
+    },
+    {
+      "type": "text",
+      "id": "badge_category",
+      "label": "Category name",
+      "default": "Back To School Gifts",
+      "info": "Shown after badge (e.g. 'in Back To School Gifts')"
+    },
+    {
+      "type": "header",
+      "content": "🔥 Urgency / Social Proof"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_urgency",
+      "label": "Show urgency text",
+      "default": true
+    },
+    {
+      "type": "textarea",
+      "id": "urgency_text",
+      "label": "Custom urgency text (optional)",
+      "info": "Leave blank to auto-generate: 'In demand. X people bought this in the last 24 hours.'"
+    },
+    {
+      "type": "number",
+      "id": "urgency_min",
+      "label": "Min random buyers count",
+      "default": 20
+    },
+    {
+      "type": "number",
+      "id": "urgency_max",
+      "label": "Max random buyers count",
+      "default": 80
+    }
+  ],
+  "presets": [
+    {
+      "name": "Social Proof"
+    }
+  ]
+}
+{% endschema %}

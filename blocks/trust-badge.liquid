@@ -1,0 +1,55 @@
+{% liquid
+  assign badge_image = block.settings.badge_image
+%}
+
+<div class="trust-badge" {{ block.shopify_attributes }}>
+  {% if badge_image != blank %}
+    {{ badge_image | image_url: width: 800 | image_tag:
+      loading: 'lazy',
+      class: 'trust-badge__img'
+    }}
+  {% else %}
+    <p class="trust-badge__placeholder">Upload trust badge image in theme editor</p>
+  {% endif %}
+</div>
+
+{% stylesheet %}
+  .trust-badge {
+    text-align: center;
+    padding: 16px 20px;
+    border-radius: 8px;
+    margin-top: 12px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(0, 0, 0, 0.04);
+  }
+
+  .trust-badge__img {
+    max-width: 100%;
+    height: auto;
+    object-fit: contain;
+  }
+
+  .trust-badge__placeholder {
+    font-size: 0.75rem;
+    color: #9ca3af;
+    margin: 0;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Trust Badge",
+  "tag": null,
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "badge_image",
+      "label": "Trust badge image"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Trust Badge"
+    }
+  ]
+}
+{% endschema %}

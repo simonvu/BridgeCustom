@@ -1,0 +1,656 @@
+{% liquid
+  assign product_description = closest.product.description
+  assign shipping_info = block.settings.shipping_info
+  assign shipping_details = block.settings.shipping_details | default: shipping_info
+  assign satisfaction_guarantee = block.settings.satisfaction_guarantee
+%}
+
+<div id="ProductTabs-{{ block.id }}" class="product-tabs" {{ block.shopify_attributes }}>
+  {%- comment -%} Desktop Tabs {%- endcomment -%}
+  <div class="product-tabs__list" role="tablist" aria-label="Product information">
+    <button
+      class="product-tabs__tab is-active"
+      id="ProductTab-description-{{ block.id }}"
+      type="button"
+      role="tab"
+      aria-selected="true"
+      aria-controls="ProductPanel-description-{{ block.id }}"
+      data-product-tab="description"
+    >
+      {{ block.settings.description_label | default: 'Description' | escape }}
+    </button>
+    <button
+      class="product-tabs__tab"
+      id="ProductTab-shipping-{{ block.id }}"
+      type="button"
+      role="tab"
+      aria-selected="false"
+      aria-controls="ProductPanel-shipping-{{ block.id }}"
+      tabindex="-1"
+      data-product-tab="shipping"
+    >
+      {{ block.settings.shipping_label | default: 'Shipping Info' | escape }}
+    </button>
+    <button
+      class="product-tabs__tab"
+      id="ProductTab-satisfaction-{{ block.id }}"
+      type="button"
+      role="tab"
+      aria-selected="false"
+      aria-controls="ProductPanel-satisfaction-{{ block.id }}"
+      tabindex="-1"
+      data-product-tab="satisfaction"
+    >
+      {{ block.settings.satisfaction_label | default: 'Satisfaction Guarantee' | escape }}
+    </button>
+  </div>
+
+  <div
+    class="product-tabs__panel rte"
+    id="ProductPanel-description-{{ block.id }}"
+    role="tabpanel"
+    aria-labelledby="ProductTab-description-{{ block.id }}"
+    data-product-panel="description"
+  >
+    {{ product_description }}
+  </div>
+  <div
+    class="product-tabs__panel rte"
+    id="ProductPanel-shipping-{{ block.id }}"
+    role="tabpanel"
+    aria-labelledby="ProductTab-shipping-{{ block.id }}"
+    data-product-panel="shipping"
+    hidden
+  >
+    <div class="product-shipping">
+      {% if block.settings.show_shipping_timeline %}
+        <div
+          class="product-shipping__timeline"
+          aria-label="{{ block.settings.shipping_timeline_label | default: 'Shipping timeline' | escape }}"
+          data-processing-min="{{ block.settings.processing_days_min | default: 0 }}"
+          data-processing-max="{{ block.settings.processing_days_max | default: 0 }}"
+          data-shipping-min="{{ block.settings.shipping_days_min | default: 0 }}"
+          data-shipping-max="{{ block.settings.shipping_days_max | default: 0 }}"
+        >
+          <div class="product-shipping__step">
+            <span class="product-shipping__step-icon" aria-hidden="true">✋</span>
+            <strong data-shipping-date="order"></strong>
+            <span>{{ block.settings.shipping_step_one_label | default: 'Order placed' | escape }}</span>
+          </div>
+          <div class="product-shipping__line" aria-hidden="true">
+            <svg class="product-shipping__arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </div>
+          <div class="product-shipping__step">
+            <span class="product-shipping__step-icon" aria-hidden="true">🚚</span>
+            <strong data-shipping-date="ship"></strong>
+            <span>{{ block.settings.shipping_step_two_label | default: 'Order ships' | escape }}</span>
+          </div>
+          <div class="product-shipping__line" aria-hidden="true">
+            <svg class="product-shipping__arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </div>
+          <div class="product-shipping__step">
+            <span class="product-shipping__step-icon" aria-hidden="true">🎁</span>
+            <strong data-shipping-date="delivery"></strong>
+            <span>{{ block.settings.shipping_step_three_label | default: 'Delivered!' | escape }}</span>
+          </div>
+        </div>
+      {% endif %}
+
+      <div class="product-shipping__details rte">
+        {{ shipping_details }}
+      </div>
+    </div>
+  </div>
+  <div
+    class="product-tabs__panel rte"
+    id="ProductPanel-satisfaction-{{ block.id }}"
+    role="tabpanel"
+    aria-labelledby="ProductTab-satisfaction-{{ block.id }}"
+    data-product-panel="satisfaction"
+    hidden
+  >
+    {{ satisfaction_guarantee }}
+  </div>
+
+  {%- comment -%} Mobile Accordion {%- endcomment -%}
+  <div class="product-tabs-accordion">
+    <details class="product-tabs-accordion__item">
+      <summary class="product-tabs-accordion__header">
+        {{ block.settings.description_label | default: 'Description' | escape }}
+        <svg class="product-tabs-accordion__icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+      </summary>
+      <div class="product-tabs-accordion__content rte">
+        {{ product_description }}
+      </div>
+    </details>
+    <details class="product-tabs-accordion__item">
+      <summary class="product-tabs-accordion__header">
+        {{ block.settings.shipping_label | default: 'Shipping Info' | escape }}
+        <svg class="product-tabs-accordion__icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+      </summary>
+      <div class="product-tabs-accordion__content rte">
+        <div class="product-shipping">
+          {% if block.settings.show_shipping_timeline %}
+            <div
+              class="product-shipping__timeline product-shipping__timeline--mobile"
+              aria-label="{{ block.settings.shipping_timeline_label | default: 'Shipping timeline' | escape }}"
+              data-processing-min="{{ block.settings.processing_days_min | default: 0 }}"
+              data-processing-max="{{ block.settings.processing_days_max | default: 0 }}"
+              data-shipping-min="{{ block.settings.shipping_days_min | default: 0 }}"
+              data-shipping-max="{{ block.settings.shipping_days_max | default: 0 }}"
+            >
+              <div class="product-shipping__step">
+                <span class="product-shipping__step-icon" aria-hidden="true">✋</span>
+                <strong data-shipping-date="order"></strong>
+                <span>{{ block.settings.shipping_step_one_label | default: 'Order placed' | escape }}</span>
+              </div>
+              <div class="product-shipping__line" aria-hidden="true">
+                <svg class="product-shipping__arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+              </div>
+              <div class="product-shipping__step">
+                <span class="product-shipping__step-icon" aria-hidden="true">🚚</span>
+                <strong data-shipping-date="ship"></strong>
+                <span>{{ block.settings.shipping_step_two_label | default: 'Order ships' | escape }}</span>
+              </div>
+              <div class="product-shipping__line" aria-hidden="true">
+                <svg class="product-shipping__arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+              </div>
+              <div class="product-shipping__step">
+                <span class="product-shipping__step-icon" aria-hidden="true">🎁</span>
+                <strong data-shipping-date="delivery"></strong>
+                <span>{{ block.settings.shipping_step_three_label | default: 'Delivered!' | escape }}</span>
+              </div>
+            </div>
+          {% endif %}
+          <div class="product-shipping__details rte">
+            {{ shipping_details }}
+          </div>
+        </div>
+      </div>
+    </details>
+    <details class="product-tabs-accordion__item">
+      <summary class="product-tabs-accordion__header">
+        {{ block.settings.satisfaction_label | default: 'Satisfaction Guarantee' | escape }}
+        <svg class="product-tabs-accordion__icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+      </summary>
+      <div class="product-tabs-accordion__content rte">
+        {{ satisfaction_guarantee }}
+      </div>
+    </details>
+  </div>
+</div>
+
+<script>
+  (() => {
+    const container = document.getElementById('ProductTabs-{{ block.id }}');
+    if (!container) return;
+
+    const tabs = container.querySelectorAll('.product-tabs__tab');
+    if (!tabs.length) return;
+
+    const panels = container.querySelectorAll('.product-tabs__panel');
+
+    /* Populate ALL shipping timelines (desktop + mobile accordion) */
+    const shippingTimelines = container.querySelectorAll('.product-shipping__timeline');
+    shippingTimelines.forEach((shippingTimeline) => {
+      const processingMin = Number(shippingTimeline.dataset.processingMin) || 0;
+      const processingMax = Math.max(Number(shippingTimeline.dataset.processingMax) || 0, processingMin);
+      const shippingMin = Number(shippingTimeline.dataset.shippingMin) || 0;
+      const shippingMax = Math.max(Number(shippingTimeline.dataset.shippingMax) || 0, shippingMin);
+      const dateFormatter = new Intl.DateTimeFormat(undefined, { month: 'short', day: 'numeric' });
+      const monthFormatter = new Intl.DateTimeFormat(undefined, { month: 'short' });
+
+      const addDays = (date, days) => {
+        const result = new Date(date);
+        result.setDate(result.getDate() + days);
+        return result;
+      };
+
+      const formatDateRange = (start, end) => {
+        const startDate = dateFormatter.format(start);
+        const endDate = dateFormatter.format(end);
+        const sameMonth = start.getMonth() === end.getMonth() && start.getFullYear() === end.getFullYear();
+        return startDate === endDate
+          ? startDate
+          : sameMonth
+            ? `${monthFormatter.format(start)} ${start.getDate()} – ${end.getDate()}`
+            : `${startDate} – ${endDate}`;
+      };
+
+      const today = new Date();
+      shippingTimeline.querySelector('[data-shipping-date="order"]').textContent = dateFormatter.format(today);
+      shippingTimeline.querySelector('[data-shipping-date="ship"]').textContent = formatDateRange(
+        addDays(today, processingMin),
+        addDays(today, processingMax)
+      );
+      shippingTimeline.querySelector('[data-shipping-date="delivery"]').textContent = formatDateRange(
+        addDays(today, processingMin + shippingMin),
+        addDays(today, processingMax + shippingMax)
+      );
+    });
+
+    /* Desktop tabs */
+    const activateTab = (tab) => {
+      const target = tab.dataset.productTab;
+      const pageScrollTop = window.scrollY;
+      const listScrollLeft = container.querySelector('.product-tabs__list').scrollLeft;
+      tabs.forEach((item) => {
+        const isActive = item === tab;
+        item.classList.toggle('is-active', isActive);
+        item.setAttribute('aria-selected', isActive ? 'true' : 'false');
+        item.tabIndex = isActive ? 0 : -1;
+      });
+      panels.forEach((panel) => {
+        panel.hidden = panel.dataset.productPanel !== target;
+      });
+      container.querySelector('.product-tabs__list').scrollLeft = listScrollLeft;
+      window.scrollTo({ top: pageScrollTop, left: window.scrollX, behavior: 'auto' });
+      requestAnimationFrame(() => {
+        window.scrollTo({ top: pageScrollTop, left: window.scrollX, behavior: 'auto' });
+      });
+    };
+
+    tabs.forEach((tab, index) => {
+      tab.addEventListener('mousedown', (event) => event.preventDefault());
+      tab.addEventListener('click', () => {
+        activateTab(tab);
+        tab.focus({ preventScroll: true });
+      });
+      tab.addEventListener('keydown', (event) => {
+        if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+        event.preventDefault();
+        const nextIndex = event.key === 'Home' ? 0 : event.key === 'End' ? tabs.length - 1 : (index + (event.key === 'ArrowRight' ? 1 : -1) + tabs.length) % tabs.length;
+        tabs[nextIndex].focus({ preventScroll: true });
+        activateTab(tabs[nextIndex]);
+      });
+    });
+  })();
+</script>
+
+{% stylesheet %}
+  /* ============================================
+   * DESKTOP: Tabs layout (>= 750px)
+   * ============================================ */
+  .product-tabs {
+    width: 100%;
+    margin-block-start: var(--gap-xl);
+  }
+
+  .product-tabs__list {
+    display: flex;
+    align-items: flex-end;
+    gap: var(--gap-xl);
+    border-bottom: 1px solid rgb(var(--color-foreground-rgb) / 0.12);
+    overflow-x: auto;
+    scrollbar-width: none;
+    overflow-anchor: none;
+    scroll-behavior: auto;
+  }
+
+  .product-tabs__list::-webkit-scrollbar {
+    display: none;
+  }
+
+  .product-tabs__tab {
+    position: relative;
+    flex: 0 0 auto;
+    border: 0;
+    background: transparent;
+    color: rgb(var(--color-foreground-rgb) / 0.55);
+    cursor: pointer;
+    font: inherit;
+    font-weight: 600;
+    padding: 0 0 var(--padding-sm);
+    min-block-size: calc(1lh + var(--padding-sm) + 2px);
+    outline: none;
+    transition: color 180ms ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* FIX: Remove outline completely on click/tap */
+  .product-tabs__tab:focus,
+  .product-tabs__tab:focus:not(:focus-visible),
+  .product-tabs__tab:active {
+    outline: none;
+    box-shadow: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Only show outline for keyboard navigation */
+  .product-tabs__tab:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  .product-tabs__tab:hover,
+  .product-tabs__tab:focus-visible,
+  .product-tabs__tab.is-active {
+    color: var(--color-foreground);
+  }
+
+  .product-tabs__tab::after {
+    position: absolute;
+    right: 0;
+    bottom: -1px;
+    left: 0;
+    height: 2px;
+    background: var(--color-foreground);
+    content: '';
+    opacity: 0;
+    transform: scaleX(0.35);
+    transform-origin: center;
+    transition: opacity 180ms ease, transform 180ms ease;
+  }
+
+  .product-tabs__tab.is-active::after {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+
+  .product-tabs__panel {
+    padding-block: var(--padding-lg);
+  }
+
+  .product-tabs__panel[hidden] {
+    display: none;
+  }
+
+  /* ============================================
+   * Shipping Timeline (shared desktop + mobile)
+   * ============================================ */
+  .product-shipping {
+    max-width: 680px;
+  }
+
+  .product-shipping__timeline {
+    display: grid;
+    grid-template-columns: minmax(90px, 1fr) minmax(30px, 1fr) minmax(90px, 1fr) minmax(30px, 1fr) minmax(90px, 1fr);
+    align-items: start;
+    margin-block: var(--padding-xl) var(--padding-lg);
+  }
+
+  .product-shipping__step {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-2xs);
+  }
+
+  .product-shipping__step:nth-of-type(3) {
+    text-align: center;
+  }
+
+  .product-shipping__step:last-of-type {
+    text-align: end;
+  }
+
+  .product-shipping__step-icon {
+    display: grid;
+    place-items: center;
+    width: 24px;
+    height: 24px;
+    margin-block-end: var(--gap-xs);
+    border-radius: 50%;
+    background: rgb(var(--color-foreground-rgb) / 0.08);
+    font-size: 0.8rem;
+  }
+
+  .product-shipping__step:nth-of-type(3) .product-shipping__step-icon {
+    align-self: center;
+  }
+
+  .product-shipping__step:last-of-type .product-shipping__step-icon {
+    align-self: end;
+  }
+
+  .product-shipping__step > span:last-child {
+    color: rgb(var(--color-foreground-rgb) / 0.85);
+  }
+
+  /* FIX: Arrow between steps */
+  .product-shipping__line {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    padding-block-start: 12px;
+    color: rgb(var(--color-foreground-rgb) / 0.25);
+  }
+
+  .product-shipping__line::before,
+  .product-shipping__line::after {
+    flex: 1;
+    border-top: 2px dashed rgb(var(--color-foreground-rgb) / 0.18);
+    content: '';
+  }
+
+  .product-shipping__arrow {
+    flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+    color: rgb(var(--color-foreground-rgb) / 0.35);
+  }
+
+  .product-shipping__line span {
+    display: none;
+  }
+
+  .product-shipping__details {
+    margin-block-start: var(--padding-md);
+  }
+
+  /* ============================================
+   * MOBILE ACCORDION (<= 749px)
+   * ============================================ */
+
+  /* Hide accordion on desktop, show tabs */
+  .product-tabs-accordion {
+    display: none;
+  }
+
+  @media screen and (max-width: 749px) {
+    /* Hide desktop tabs on mobile */
+    .product-tabs__list,
+    .product-tabs__panel {
+      display: none !important;
+    }
+
+    /* Show accordion on mobile */
+    .product-tabs-accordion {
+      display: block;
+      border-top: 1px solid rgb(var(--color-foreground-rgb) / 0.12);
+    }
+
+    .product-tabs-accordion__item {
+      border-bottom: 1px solid rgb(var(--color-foreground-rgb) / 0.12);
+    }
+
+    .product-tabs-accordion__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      padding: var(--padding-md) 0;
+      font: inherit;
+      font-weight: 600;
+      font-size: var(--font-size--small, 0.875rem);
+      color: var(--color-foreground);
+      cursor: pointer;
+      list-style: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .product-tabs-accordion__header::-webkit-details-marker {
+      display: none;
+    }
+
+    .product-tabs-accordion__header::marker {
+      display: none;
+      content: '';
+    }
+
+    .product-tabs-accordion__icon {
+      flex-shrink: 0;
+      transition: transform 250ms ease;
+      color: rgb(var(--color-foreground-rgb) / 0.5);
+    }
+
+    .product-tabs-accordion__item[open] > .product-tabs-accordion__header .product-tabs-accordion__icon {
+      transform: rotate(180deg);
+    }
+
+    .product-tabs-accordion__content {
+      padding-block-end: var(--padding-lg);
+      animation: accordion-fade-in 250ms ease;
+    }
+
+    @keyframes accordion-fade-in {
+      from {
+        opacity: 0;
+        transform: translateY(-4px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .product-shipping__timeline {
+      grid-template-columns: minmax(76px, 1fr) minmax(18px, 0.5fr) minmax(76px, 1fr) minmax(18px, 0.5fr) minmax(76px, 1fr);
+      font-size: var(--font-size--small);
+    }
+  }
+
+  /* Desktop tab gap override */
+  @media screen and (min-width: 750px) {
+    .product-tabs-accordion {
+      display: none;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Product tabs",
+  "tag": null,
+  "settings": [
+    {
+      "type": "text",
+      "id": "description_label",
+      "label": "Description tab label",
+      "default": "Description"
+    },
+    {
+      "type": "text",
+      "id": "shipping_label",
+      "label": "Shipping tab label",
+      "default": "Shipping Info"
+    },
+    {
+      "type": "text",
+      "id": "satisfaction_label",
+      "label": "Satisfaction tab label",
+      "default": "Satisfaction Guarantee"
+    },
+    {
+      "type": "richtext",
+      "id": "shipping_info",
+      "label": "Shipping Info content",
+      "default": "<p>Add your shipping information here.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Shipping processing"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_shipping_timeline",
+      "label": "Show shipping timeline",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "shipping_timeline_label",
+      "label": "Timeline accessibility label",
+      "default": "Shipping timeline",
+      "visible_if": "{{ block.settings.show_shipping_timeline }}"
+    },
+    {
+      "type": "range",
+      "id": "processing_days_min",
+      "label": "Processing time from",
+      "min": 0,
+      "max": 30,
+      "step": 1,
+      "unit": "day",
+      "default": 0,
+      "visible_if": "{{ block.settings.show_shipping_timeline }}"
+    },
+    {
+      "type": "range",
+      "id": "processing_days_max",
+      "label": "Processing time to",
+      "min": 0,
+      "max": 30,
+      "step": 1,
+      "unit": "day",
+      "default": 0,
+      "visible_if": "{{ block.settings.show_shipping_timeline }}"
+    },
+    {
+      "type": "text",
+      "id": "shipping_step_one_label",
+      "label": "Step 1 label",
+      "default": "Order placed",
+      "visible_if": "{{ block.settings.show_shipping_timeline }}"
+    },
+    {
+      "type": "range",
+      "id": "shipping_days_min",
+      "label": "Shipping time from",
+      "min": 0,
+      "max": 30,
+      "step": 1,
+      "unit": "day",
+      "default": 2,
+      "visible_if": "{{ block.settings.show_shipping_timeline }}"
+    },
+    {
+      "type": "range",
+      "id": "shipping_days_max",
+      "label": "Shipping time to",
+      "min": 0,
+      "max": 45,
+      "step": 1,
+      "unit": "day",
+      "default": 7,
+      "visible_if": "{{ block.settings.show_shipping_timeline }}"
+    },
+    {
+      "type": "text",
+      "id": "shipping_step_two_label",
+      "label": "Step 2 label",
+      "default": "Order ships",
+      "visible_if": "{{ block.settings.show_shipping_timeline }}"
+    },
+    {
+      "type": "text",
+      "id": "shipping_step_three_label",
+      "label": "Step 3 label",
+      "default": "Delivered!",
+      "visible_if": "{{ block.settings.show_shipping_timeline }}"
+    },
+    {
+      "type": "richtext",
+      "id": "shipping_details",
+      "label": "Shipping processing details",
+      "default": "<ul><li>The estimated delivery time provided is subject to potential variations.</li><li>Free shipping conditions and tracking information.</li></ul>"
+    },
+    {
+      "type": "richtext",
+      "id": "satisfaction_guarantee",
+      "label": "Satisfaction Guarantee content",
+      "default": "<p>Add your satisfaction guarantee information here.</p>"
+    }
+  ]
+}
+{% endschema %}
