@@ -1,5 +1,11 @@
-# Không đẩy file cấu hình settings - tránh reset các option đã set trên Shopify Admin
+# Don't push Shopify Admin settings - prevents resetting store configuration
 config/settings_data.json
 
-# Không đẩy file template JSON - tránh reset bố cục section đã sắp xếp trên Shopify Admin
+# Don't push template JSON - prevents resetting Admin layout arrangements  
 templates/*.json
+
+# Don't push other temporary files
+node_modules/
+.DS_Store
+.env
+*.log

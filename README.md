@@ -35,13 +35,17 @@ bc/
 
 ### Push to Shopify LIVE
 ```bash
-npx shopify theme push --theme="185206800684" --allow-live
+npx shopify theme push --theme="185206800684" --allow-live --nodelete
 ```
 
 ### Push to Development
 ```bash
-npx shopify theme push --development
+npx shopify theme push --development --nodelete
 ```
+
+**⚠️ IMPORTANT:** Always use `--nodelete` flag to prevent resetting Admin settings!
+
+See [DEPLOYMENT.md](DEPLOYMENT.md) for detailed deployment guide and best practices.
 
 ## Shopify Store
 - **Store**: bridgecustom.myshopify.com
