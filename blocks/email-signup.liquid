@@ -9,10 +9,14 @@
 %}
 {% render 'button-custom-styles', block_settings: block_settings, block_id: block.id %}
 <div
-  class="email-signup-block size-style spacing-style"
+  class="email-signup-block email-signup-block--{{ block_settings.signup_width | default: 'full-width' }} size-style spacing-style"
   style="
     {% render 'size-style', settings: block_settings %}
     {% render 'spacing-style', settings: block_settings %}
+    --signup-background: {{ block_settings.signup_background | default: '#fff3e2' }};
+    --signup-text-color: {{ block_settings.signup_text_color | default: '#343b46' }};
+    --signup-button-background: {{ block_settings.signup_button_background | default: '#f73821' }};
+    --signup-button-text: {{ block_settings.signup_button_text | default: '#ffffff' }};
   "
   {{ block.shopify_attributes }}
 >
@@ -435,14 +439,19 @@
     width: 100%;
     min-width: 0;
     padding: clamp(28px, 4vw, 44px) clamp(20px, 3vw, 48px);
-    background: #fff3e2;
-    color: #343b46;
+    background: var(--signup-background);
+    color: var(--signup-text-color);
     text-align: center;
+  }
+
+  .footer-content .email-signup-block--boxed {
+    max-width: 1200px;
+    margin-inline: auto;
   }
 
   .footer-content .email-signup__heading {
     padding-block: 0 16px;
-    color: #343b46;
+    color: var(--signup-text-color);
     font-size: clamp(1.35rem, 2vw, 1.75rem);
     font-weight: 700;
   }
@@ -485,14 +494,14 @@
     width: 100%;
     margin: 0;
     padding: 0 18px;
-    background: #f73821;
-    color: #ffffff;
+    background: var(--signup-button-background);
+    color: var(--signup-button-text);
     font-weight: 700;
   }
 
   .footer-content .email-signup__input-group .email-signup__button:hover {
-    background: #d92d1a;
-    color: #ffffff;
+    filter: brightness(0.9);
+    color: var(--signup-button-text);
   }
 
   @media screen and (max-width: 749px) {
@@ -552,6 +561,50 @@
       "id": "description",
       "label": "Description",
       "default": "<p>Find special gifts made just for you and get a cool 10% OFF your first buy!<br>Make gift-giving super awesome with a sprinkle of extra love!</p>"
+    },
+    {
+      "type": "header",
+      "content": "Footer signup style"
+    },
+    {
+      "type": "select",
+      "id": "signup_width",
+      "label": "Layout",
+      "options": [
+        {
+          "value": "full-width",
+          "label": "Full width"
+        },
+        {
+          "value": "boxed",
+          "label": "Boxed"
+        }
+      ],
+      "default": "full-width"
+    },
+    {
+      "type": "color",
+      "id": "signup_background",
+      "label": "Background",
+      "default": "#fff3e2"
+    },
+    {
+      "type": "color",
+      "id": "signup_text_color",
+      "label": "Text color",
+      "default": "#343b46"
+    },
+    {
+      "type": "color",
+      "id": "signup_button_background",
+      "label": "Button background",
+      "default": "#f73821"
+    },
+    {
+      "type": "color",
+      "id": "signup_button_text",
+      "label": "Button text color",
+      "default": "#ffffff"
     },
     {
       "type": "color",
