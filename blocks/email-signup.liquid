@@ -428,6 +428,78 @@
   .email-signup__message-text {
     margin: 0;
   }
+
+  /* TrendingCustom-style footer signup */
+  .footer-content .email-signup-block {
+    grid-column: 1 / -1;
+    width: 100%;
+    min-width: 0;
+    padding: clamp(28px, 4vw, 44px) clamp(20px, 3vw, 48px);
+    background: #fff3e2;
+    color: #343b46;
+    text-align: center;
+  }
+
+  .footer-content .email-signup__heading {
+    padding-block: 0 16px;
+    color: #343b46;
+    font-size: clamp(1.35rem, 2vw, 1.75rem);
+    font-weight: 700;
+  }
+
+  .footer-content .email-signup__description {
+    max-width: 760px;
+    margin: 0 auto 24px;
+    line-height: 1.55;
+  }
+
+  .footer-content .email-signup__description p {
+    margin: 0;
+  }
+
+  .footer-content .email-signup__form {
+    width: 100%;
+  }
+
+  .footer-content .email-signup__input-group {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) minmax(220px, 1fr);
+    gap: 10px;
+    align-items: stretch;
+  }
+
+  .footer-content .email-signup__input-group .email-signup__input,
+  .footer-content .email-signup__input-group .email-signup__button {
+    min-height: 50px;
+    border-radius: 6px;
+  }
+
+  .footer-content .email-signup__input-group .email-signup__input {
+    padding: 12px 16px;
+    border: 1px solid #a7adb5;
+    background: #ffffff;
+    color: #343b46;
+  }
+
+  .footer-content .email-signup__input-group .email-signup__button {
+    width: 100%;
+    margin: 0;
+    padding: 0 18px;
+    background: #f73821;
+    color: #ffffff;
+    font-weight: 700;
+  }
+
+  .footer-content .email-signup__input-group .email-signup__button:hover {
+    background: #d92d1a;
+    color: #ffffff;
+  }
+
+  @media screen and (max-width: 749px) {
+    .footer-content .email-signup__input-group {
+      grid-template-columns: 1fr;
+    }
+  }
 {% endstylesheet %}
 
 {% schema %}
