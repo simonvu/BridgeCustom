@@ -656,8 +656,6 @@ if (!customElements.get('facet-remove-component')) {
  * @extends {Component}
  */
 class SortingFilterComponent extends Component {
-  requiredRefs = ['details', 'summary', 'listbox'];
-
   /**
    * Handles keyboard navigation in the sorting dropdown
    * @param {KeyboardEvent} event - The keyboard event
