@@ -54,10 +54,20 @@ class FacetsFormComponent extends Component {
   createURLParameters(formData = new FormData(this.refs.facetsForm)) {
     let newParameters = new URLSearchParams(/** @type any */ (formData));
 
+    // Clean up price filter empty values
     if (newParameters.get('filter.v.price.gte') === '') newParameters.delete('filter.v.price.gte');
     if (newParameters.get('filter.v.price.lte') === '') newParameters.delete('filter.v.price.lte');
 
+    // Remove pagination
     newParameters.delete('page');
+
+    // Remove all existing sort_by params to prevent accumulation
+    // This fixes the issue where multiple sort_by params stack up in the URL
+    const sortByValue = newParameters.get('sort_by');
+    newParameters.delete('sort_by');
+    if (sortByValue) {
+      newParameters.set('sort_by', sortByValue);
+    }
 
     const searchQuery = this.#getSearchQuery();
     if (searchQuery) newParameters.set(SEARCH_QUERY, searchQuery);
