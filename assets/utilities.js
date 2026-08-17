@@ -118,6 +118,12 @@ export function startViewTransition(callback, types) {
 
   // eslint-disable-next-line no-async-promise-executor
   return new Promise(async (resolve) => {
+    // Rapid sort/filter interactions can trigger multiple transitions in quick succession.
+    // Serialise them so the browser never gets a second startViewTransition call while one is still active.
+    if (viewTransition.current) {
+      await viewTransition.current;
+    }
+
     let cleanupFunctions = [];
 
     if (types) {
@@ -130,18 +136,18 @@ export function startViewTransition(callback, types) {
     }
 
     const transition = document.startViewTransition(callback);
-
-    if (!viewTransition.current) {
-      viewTransition.current = transition.finished;
-    }
+    viewTransition.current = transition.finished;
 
     if (types) types.forEach((type) => transition.types.add(type));
 
-    transition.finished.then(() => {
-      viewTransition.current = undefined;
-      cleanupFunctions.forEach((cleanupFunction) => cleanupFunction());
-      resolve();
-    });
+    transition.finished
+      .then(() => {
+        cleanupFunctions.forEach((cleanupFunction) => cleanupFunction());
+      })
+      .finally(() => {
+        viewTransition.current = undefined;
+        resolve();
+      });
   });
 }
 
