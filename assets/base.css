@@ -2686,6 +2686,7 @@ form.payment-terms {
 
 .shopify-policy__container {
   padding-block: var(--padding-xl);
+  color: var(--color-input-text, #333333);
 }
 
 .checkbox {
