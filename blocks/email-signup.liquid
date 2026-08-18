@@ -176,7 +176,7 @@
   }
 
   .email-signup__inner {
-    width: min(var(--footer-content-max-width, 1200px), calc(100% - 40px));
+    width: 100%;
     margin-inline: auto;
   }
 
@@ -445,10 +445,23 @@
     grid-column: 1 / -1;
     width: 100%;
     min-width: 0;
-    padding: clamp(28px, 4vw, 44px) clamp(20px, 3vw, 48px);
-    background: var(--signup-background);
+    position: relative;
+    isolation: isolate;
+    padding: clamp(28px, 4vw, 44px) 0;
+    background: transparent;
     color: var(--signup-text-color);
     text-align: center;
+  }
+
+  .footer-content .email-signup-block::before {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    inset-block: 0;
+    left: 50%;
+    width: 100vw;
+    transform: translateX(-50%);
+    background: var(--signup-background);
   }
 
   .footer-content .email-signup-block--boxed {

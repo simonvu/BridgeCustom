@@ -31,7 +31,7 @@
     style="
       {%  render 'spacing-style', settings: section.settings %}
       --footer-gap: {{ section.settings.gap }}px;
-      --footer-content-max-width: min({{ section.settings.content_max_width }}px, calc(100% - 40px));
+      --footer-content-max-width: var(--page-content-width);
       --grid-columns: {{ grid_columns }};
     "
   >
@@ -41,12 +41,12 @@
 
 {% stylesheet %}
   .footer-content {
-    contain: content;
-    content-visibility: auto;
     display: grid;
     grid-template-columns: 1fr;
     gap: var(--footer-gap);
     align-items: start;
+    width: min(var(--page-content-width), calc(100% - var(--page-margin) * 2));
+    margin-inline: auto;
   }
 
   .footer-content > .email-signup-block {
@@ -57,14 +57,6 @@
     margin-inline: 0;
   }
 
-  .footer-content.footer-content--signup-full-width > .email-signup-block {
-    position: relative;
-    left: 50%;
-    width: 100vw !important;
-    margin-inline: 0;
-    transform: translateX(-50%);
-  }
-
   .footer-content .menu__heading__default {
     font-weight: var(--font-heading--weight);
   }
@@ -72,8 +64,6 @@
   @media screen and (min-width: 750px) and (max-width: 989px) {
     .footer-content {
       grid-template-columns: repeat(min(var(--grid-columns), 3), 1fr);
-      width: min(100%, var(--footer-content-max-width));
-      margin-inline: auto;
     }
   }
 
@@ -178,16 +168,6 @@
       "step": 1,
       "unit": "px",
       "default": 0
-    },
-    {
-      "type": "range",
-      "id": "content_max_width",
-      "label": "Content max width",
-      "min": 800,
-      "max": 1800,
-      "step": 20,
-      "unit": "px",
-      "default": 1200
     },
     {
       "type": "checkbox",
