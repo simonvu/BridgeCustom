@@ -9,6 +9,7 @@ cd "$project_root"
 required_ignore_patterns=(
   "config/settings_data.json"
   "templates/*.json"
+  "sections/*.json"
 )
 
 for pattern in "${required_ignore_patterns[@]}"; do
@@ -25,4 +26,5 @@ npx shopify theme push \
   --nodelete \
   --ignore="config/settings_data.json" \
   --ignore="templates/*.json" \
+  --ignore="sections/*.json" \
   --ignore="scripts/*.sh"

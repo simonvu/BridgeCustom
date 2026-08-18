@@ -18,36 +18,30 @@
 
 ## ✅ Correct Deployment Process
 
-### Use the Protected LIVE Deploy Script
-
-The project includes a guarded deploy script. It refuses to run if the
-settings/layout exclusions are missing and always passes both `--nodelete` and
-explicit `--ignore` patterns to Shopify CLI:
-
-```bash
-cd /Users/user/Documents/BridgeCustom/Theme/bc
-./scripts/push-live.sh
-```
-
-Use this script for LIVE deploys instead of calling `shopify theme push`
-directly. It protects the Admin-configured values in `config/settings_data.json`
-and the Theme Editor layout files in `templates/*.json`.
+  - **`sections/*.json`** - Header/footer section group layouts (DON'T PUSH)
+    - Generated and maintained by the Shopify Theme Editor
+    - Excluded to prevent overwriting Admin header/footer settings
 
 ### Push to LIVE Theme (Recommended)
 ```bash
 cd /Users/user/Documents/BridgeCustom/Theme/bc
 
-# Push with safety flags
+# Push code directly with settings/layout protection
 npx shopify theme push \
   --theme="185206800684" \
   --allow-live \
-  --nodelete
+  --nodelete \
+  --ignore="config/settings_data.json" \
+  --ignore="templates/*.json" \
+  --ignore="sections/*.json" \
+  --ignore="scripts/*.sh"
 ```
 
 **Flags explanation:**
 - `--theme="185206800684"` - Target theme ID (BridgeCustom V2 LIVE)
 - `--allow-live` - Allow pushing to live theme
 - `--nodelete` - **CRITICAL**: Prevent deleting remote files not in local (keeps settings intact)
+- `--ignore` - Explicitly excludes Admin settings, Theme Editor layouts, and local helpers
 
 ### Push to Development Theme (Testing)
 ```bash
@@ -108,6 +102,7 @@ git checkout -b feature/menu-improvements
 # 3. Test locally on development theme
 npx shopify theme push --development --nodelete
 
+  | `sections/*.json` | ❌ NO | Header/footer Theme Editor layouts |
 # 4. Verify in admin
 # (check Theme Editor)
 

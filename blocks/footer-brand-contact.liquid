@@ -1,0 +1,193 @@
+{% assign block_settings = block.settings %}
+
+<div
+  class="footer-brand-contact"
+  style="--footer-brand-logo-width: {{ block_settings.logo_width | default: 280 }}px;"
+  {{ block.shopify_attributes }}
+>
+  {% if block_settings.logo != blank %}
+    {{
+      block_settings.logo
+      | image_url: width: 800
+      | image_tag: class: 'footer-brand-contact__logo', loading: 'lazy', alt: block_settings.logo_alt
+    }}
+  {% endif %}
+
+  {% if block_settings.contact_info != blank %}
+    <div class="footer-brand-contact__info">{{ block_settings.contact_info }}</div>
+  {% endif %}
+
+  <div class="footer-brand-contact__socials" aria-label="Social links">
+    {% assign social_links = 'facebook, youtube, pinterest, instagram, twitter, tiktok, linkedin, amazon' | split: ', ' %}
+    {% for platform in social_links %}
+      {% assign setting_id = platform | append: '_url' %}
+      {% assign link_url = block_settings[setting_id] %}
+      {% if link_url != blank %}
+        <a
+          class="footer-brand-contact__social footer-brand-contact__social--{{ platform }}"
+          href="{{ link_url }}"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="{{ platform | capitalize }}"
+        >
+          {% if platform == 'amazon' %}
+            <span class="footer-brand-contact__amazon">amazon</span>
+          {% else %}
+            <svg class="footer-brand-contact__icon" aria-hidden="true" viewBox="0 0 20 20">
+              {% render 'icon', icon: platform %}
+            </svg>
+          {% endif %}
+        </a>
+      {% endif %}
+    {% endfor %}
+  </div>
+</div>
+
+{% stylesheet %}
+  .footer-brand-contact {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-md);
+    min-width: 0;
+  }
+
+  .footer-brand-contact__logo {
+    display: block;
+    width: min(100%, var(--footer-brand-logo-width, 280px));
+    height: auto;
+    object-fit: contain;
+    object-position: left center;
+  }
+
+  .footer-brand-contact__info {
+    line-height: 1.55;
+  }
+
+  .footer-brand-contact__info p {
+    margin: 0 0 8px;
+  }
+
+  .footer-brand-contact__info p:last-child {
+    margin-bottom: 0;
+  }
+
+  .footer-brand-contact__socials {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .footer-brand-contact__social {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    color: inherit;
+  }
+
+  .footer-brand-contact__icon {
+    width: 28px;
+    height: 28px;
+    fill: currentColor;
+  }
+
+  .footer-brand-contact__amazon {
+    font-family: Georgia, serif;
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: -1px;
+    line-height: 1;
+  }
+
+  .footer-brand-contact__social:hover {
+    opacity: 0.7;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Footer brand & contact",
+  "tag": null,
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo"
+    },
+    {
+      "type": "text",
+      "id": "logo_alt",
+      "label": "Logo alt text",
+      "default": "Brand logo"
+    },
+    {
+      "type": "range",
+      "id": "logo_width",
+      "label": "Logo width",
+      "min": 80,
+      "max": 500,
+      "step": 10,
+      "unit": "px",
+      "default": 280
+    },
+    {
+      "type": "richtext",
+      "id": "contact_info",
+      "label": "Contact information",
+      "default": "<p><strong>Get in touch?</strong></p><p><strong>Email 24/7:</strong> support@example.com</p><p><strong>Live chat:</strong> Online from 9:30 AM to 5 PM (PST), Mon-Sun</p><p><strong>Address:</strong> Your address</p>"
+    },
+    {
+      "type": "header",
+      "content": "Social links"
+    },
+    {
+      "type": "url",
+      "id": "facebook_url",
+      "label": "Facebook"
+    },
+    {
+      "type": "url",
+      "id": "youtube_url",
+      "label": "YouTube"
+    },
+    {
+      "type": "url",
+      "id": "pinterest_url",
+      "label": "Pinterest"
+    },
+    {
+      "type": "url",
+      "id": "instagram_url",
+      "label": "Instagram"
+    },
+    {
+      "type": "url",
+      "id": "twitter_url",
+      "label": "X / Twitter"
+    },
+    {
+      "type": "url",
+      "id": "tiktok_url",
+      "label": "TikTok"
+    },
+    {
+      "type": "url",
+      "id": "linkedin_url",
+      "label": "LinkedIn"
+    },
+    {
+      "type": "url",
+      "id": "amazon_url",
+      "label": "Amazon"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Footer brand & contact",
+      "category": "Footer"
+    }
+  ]
+}
+{% endschema %}

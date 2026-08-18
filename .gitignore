@@ -6,6 +6,7 @@ yarn-error.log
 # Shopify specific files
 config/settings_data.json
 templates/*.json
+sections/*.json
 
 # IDE & Editor
 .vscode/

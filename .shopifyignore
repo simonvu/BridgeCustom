@@ -4,6 +4,9 @@ config/settings_data.json
 # Don't push template JSON - prevents resetting Admin layout arrangements  
 templates/*.json
 
+# Don't push section group JSON - prevents overwriting Theme Editor layouts
+sections/*.json
+
 # Don't push local deployment helpers
 scripts/*.sh
 
