@@ -20,6 +20,7 @@
   "
   {{ block.shopify_attributes }}
 >
+  <div class="email-signup__inner">
   {% if block_settings.heading != blank %}
     <div
       class="email-signup__heading {{ block_settings.heading_preset }}"
@@ -150,6 +151,7 @@
       </div>
     {%- endif -%}
   {% endform %}
+  </div>
 </div>
 
 {% stylesheet %}
@@ -171,6 +173,11 @@
   .email-signup__heading {
     color: var(--color, inherit);
     padding-block: var(--padding-sm);
+  }
+
+  .email-signup__inner {
+    width: min(var(--footer-content-max-width, 1200px), calc(100% - 40px));
+    margin-inline: auto;
   }
 
   .email-signup__description {

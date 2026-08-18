@@ -48,7 +48,10 @@
     display: flex;
     flex-direction: column;
     gap: var(--gap-md);
+    width: 100%;
+    max-width: 100%;
     min-width: 0;
+    box-sizing: border-box;
   }
 
   .footer-brand-contact__logo {
@@ -103,6 +106,28 @@
 
   .footer-brand-contact__social:hover {
     opacity: 0.7;
+  }
+
+  @media screen and (max-width: 749px) {
+    .footer-brand-contact {
+      gap: 22px;
+      padding-inline: 16px;
+    }
+
+    .footer-brand-contact__logo {
+      align-self: center;
+      width: min(100%, var(--footer-brand-logo-width, 240px));
+    }
+
+    .footer-brand-contact__info {
+      width: 100%;
+    }
+
+    .footer-brand-contact__socials {
+      justify-content: center;
+      gap: 16px;
+      width: 100%;
+    }
   }
 {% endstylesheet %}
 

@@ -5,6 +5,7 @@
   assign menu = block_settings.menu
   assign heading = block_settings.heading
   assign show_as_accordion = block_settings.show_as_accordion
+  assign collapse_on_mobile = block_settings.collapse_on_mobile
   if show_as_accordion == true and block_settings.accordion_dividers == true
     assign dividers_enabled = true
   endif
@@ -18,7 +19,7 @@
   %}
   {%- liquid
     assign menu_class = 'menu'
-    if show_as_accordion == true
+    if show_as_accordion == true or collapse_on_mobile == true
       assign menu_class = menu_class | append: ' menu--accordion'
     endif
     if dividers_enabled == true
@@ -26,10 +27,6 @@
     endif
     assign should_disable_on_mobile = false
     assign should_open_by_default_on_mobile = false
-    if show_as_accordion == false
-      assign should_disable_on_mobile = true
-      assign should_open_by_default_on_mobile = true
-    endif
   -%}
   {% capture menu_accordion_children %}
     <details
@@ -43,9 +40,6 @@
         --spacing--size: {{ block_settings.menu_spacing }}px;
         {% render 'spacing-style', settings: block_settings %}
       "
-      {% if show_as_accordion == false %}
-        open
-      {% endif %}
       {{ block.shopify_attributes }}
     >
       <summary class="menu__heading{% if heading == blank and menu.title == blank %} menu__heading--empty{% endif %} {{ block_settings.heading_preset }}">
@@ -126,7 +120,11 @@
     }
 
     .menu--accordion .menu__heading__accordion {
-      display: contents;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--gap-sm);
+      width: 100%;
     }
 
     .menu--accordion .menu__heading__default {
@@ -139,6 +137,68 @@
 
     .menu--accordion .menu__details {
       padding-inline: 0;
+    }
+
+    .menu--accordion .menu__heading {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      min-height: 44px;
+      cursor: pointer;
+    }
+
+    .menu--accordion .menu__heading__toggle {
+      flex: 0 0 auto;
+      margin-inline-start: auto;
+    }
+
+    .footer-content .menu--accordion {
+      padding-inline: 0;
+    }
+
+    .footer-content .menu--accordion .menu__heading {
+      padding-inline: 16px;
+      min-height: 32px;
+      padding-block: 4px;
+      font-size: 1rem;
+      line-height: 1.2;
+      font-weight: 700;
+    }
+
+    .footer-content .menu--accordion .menu__heading__default,
+    .footer-content .menu--accordion .menu__heading__accordion {
+      font-weight: 700;
+    }
+
+    .footer-content .menu--accordion .menu__details[open] .menu__heading {
+      color: #f0644a;
+    }
+
+    .footer-content .menu--accordion .details-content {
+      margin-block-start: 0;
+      width: calc(100% - 32px);
+      margin-inline: 16px;
+      box-sizing: border-box;
+      padding: 8px 16px 12px;
+      border-radius: 10px;
+      background: #faf6f0;
+    }
+
+    .footer-content > .footer-brand-contact + .menu {
+      margin-block-start: -12px;
+    }
+
+    .footer-content .menu--accordion .menu__item {
+      padding-block: 9px;
+      line-height: 1.35;
+    }
+
+    .footer-content .menu--accordion .menu__item + .menu__item {
+      margin-block-start: 0;
+    }
+
+    .footer-content > .menu + .menu {
+      margin-block-start: -10px;
     }
 
     .menu--dividers .menu__details {
@@ -186,6 +246,12 @@
       "id": "show_as_accordion",
       "label": "t:settings.show_as_accordion",
       "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "collapse_on_mobile",
+      "label": "Collapse menu on mobile",
+      "default": true
     },
     {
       "type": "select",

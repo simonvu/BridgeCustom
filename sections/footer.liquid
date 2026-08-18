@@ -86,6 +86,12 @@
       justify-content: center;
     }
 
+    .footer-content[style*='--grid-columns: 4'] {
+      grid-template-columns:
+        minmax(0, calc((var(--footer-content-max-width) - 3 * var(--footer-gap)) / 3))
+        repeat(3, minmax(0, calc((var(--footer-content-max-width) - 3 * var(--footer-gap)) * 2 / 9)));
+    }
+
     .footer-content[style*='--grid-columns: 1'] {
       justify-items: center;
     }
