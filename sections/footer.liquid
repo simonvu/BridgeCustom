@@ -65,6 +65,10 @@
     .footer-content {
       grid-template-columns: repeat(min(var(--grid-columns), 3), 1fr);
     }
+
+    .footer-content[style*='--grid-columns: 4'] {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
   }
 
   @media screen and (min-width: 990px) {

@@ -474,9 +474,6 @@
         onclick="var modal = document.getElementById('search-modal'); if (modal) { var d = modal.querySelector('[ref=dialog]') || modal.querySelector('dialog'); if (d && d.showModal) d.showModal(); }"
         aria-label="{{ 'content.search_input_label' | t }}"
       >
-        <span class="svg-wrapper header__mobile-search-bar-icon">
-          {{ 'icon-search.svg' | inline_asset_content }}
-        </span>
         <span class="header__mobile-search-bar-text">{{ 'content.search_input_placeholder' | t | default: 'Search for anything' }}</span>
         <span class="svg-wrapper header__mobile-search-bar-icon-right">
           {{ 'icon-search.svg' | inline_asset_content }}
