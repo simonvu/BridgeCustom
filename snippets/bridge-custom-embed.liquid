@@ -1,0 +1,104 @@
+{% comment %}
+  Bridge Custom product-page embed.
+  Injects the personalization form into the native product form.
+  Live preview is a dedicated media-gallery thumbnail: showing it hides product photos, and vice versa.
+{% endcomment %}
+
+{% if product != blank and product.metafields.bridgecustom.enabled.value %}
+  {% assign bc_customizer_url = product.metafields.bridgecustom.customizer_url.value | default: "" %}
+  {% assign bc_app_origin = bc_customizer_url | split: "/customize" | first %}
+  {% if bc_app_origin == blank %}
+    {% assign bc_app_origin = "https://app.bridgecustom.com" %}
+  {% endif %}
+  <div
+    id="bridgecustom-embed"
+    data-shop="{{ shop.permanent_domain }}"
+    data-product="{{ product.id }}"
+    data-app-origin="{{ bc_app_origin | escape }}"
+    hidden
+  ></div>
+  <script src="{{ 'bridge-custom-embed.js' | asset_url }}" defer></script>
+{% endif %}
+
+{% stylesheet %}
+  #bridgecustom-form-host {
+    display: block !important;
+    visibility: visible !important;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    margin: 0 0 1rem;
+    position: relative;
+    z-index: 2;
+  }
+
+  .bridgecustom-form-placeholder {
+    margin: 0;
+    padding: 0.85rem 1rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 1rem;
+    background: #f8fafc;
+    color: #475569;
+    font-size: 0.8125rem;
+    font-weight: 600;
+  }
+
+  .bridgecustom-preview-pane {
+    position: absolute;
+    left: 0;
+    right: 0;
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+    overflow: hidden;
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  .bridgecustom-preview-pane.is-active {
+    visibility: visible;
+    pointer-events: auto;
+  }
+
+  .bridgecustom-preview-host,
+  #bridgecustom-preview-host {
+    width: 100%;
+    height: 100%;
+  }
+
+  slideshow-component.bc-live-preview-on slideshow-slides {
+    visibility: hidden;
+  }
+
+  .slideshow-controls__thumbnail[data-bc-preview-thumb] {
+    background: #fff;
+  }
+
+  .slideshow-controls__thumbnail[data-bc-preview-thumb] img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    background: #fff;
+  }
+
+  .slideshow-controls__thumbnail[data-bc-preview-thumb][aria-selected="true"] {
+    box-shadow: 0 0 0 2px rgb(var(--color-foreground-rgb, 15 23 42));
+  }
+
+  .bridgecustom-preview-layer,
+  .bridgecustom-preview-badge {
+    display: none !important;
+  }
+
+  .bridgecustom-form-block:empty {
+    display: none;
+  }
+
+  @media screen and (max-width: 749px) {
+    #bridgecustom-form-host {
+      grid-column: 1 / -1;
+    }
+  }
+{% endstylesheet %}

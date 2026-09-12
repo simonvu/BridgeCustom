@@ -1,0 +1,42 @@
+{%- assign product = closest.product -%}
+
+<div
+  class="bridgecustom-form-block"
+  data-bridgecustom-form="block"
+  {{ block.shopify_attributes }}
+>
+  {%- if request.visual_preview_mode -%}
+    <p class="bridgecustom-form-block__editor">Bridge Custom personalization form</p>
+  {%- endif -%}
+</div>
+
+{% stylesheet %}
+  .bridgecustom-form-block__editor {
+    margin: 0;
+    padding: 0.75rem 1rem;
+    border: 1px dashed #c7d2fe;
+    border-radius: 0.75rem;
+    background: #eef2ff;
+    color: #3730a3;
+    font-size: 0.8125rem;
+    font-weight: 600;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Bridge Custom form",
+  "tag": null,
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Personalization fields inject into the product form. Add to cart stays the theme button. Live preview is a gallery thumbnail: it hides product photos while active, and product photos hide Live Preview."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Bridge Custom form"
+    }
+  ]
+}
+{% endschema %}
