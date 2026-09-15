@@ -148,10 +148,17 @@
                 assign bc_custom = false
                 assign bc_preview = ''
                 assign bc_design = ''
+                assign bc_color = ''
                 assign bc_app_origin = item.product.metafields.bridgecustom.customizer_url.value | default: '' | split: '/customize' | first
                 if bc_app_origin == blank
                   assign bc_app_origin = 'https://app.bridgecustom.com'
                 endif
+                for option in item.options_with_values
+                  assign opt_name = option.name | downcase
+                  if opt_name contains 'color' or opt_name contains 'colour'
+                    assign bc_color = option.value
+                  endif
+                endfor
                 for property in item.properties
                   if property.first == '_bc' and property.last != blank
                     assign bc_custom = true
@@ -161,6 +168,9 @@
                   endif
                   if property.first == '_bc_design' and property.last != blank
                     assign bc_design = property.last
+                  endif
+                  if property.first == '_bc_color' and property.last != blank
+                    assign bc_color = property.last
                   endif
                 endfor
               -%}
@@ -342,6 +352,7 @@
                       data-variant-id="{{ item.variant_id }}"
                       data-quantity="{{ item.quantity }}"
                       data-selling-plan="{{ item.selling_plan_allocation.selling_plan.id | default: '' }}"
+                      data-product-color="{{ bc_color | escape }}"
                     >
                       Edit Design
                     </button>

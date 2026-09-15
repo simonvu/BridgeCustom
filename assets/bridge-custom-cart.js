@@ -96,6 +96,7 @@
     var variantId = button.getAttribute("data-variant-id") || "";
     var quantity = button.getAttribute("data-quantity") || "1";
     var sellingPlan = button.getAttribute("data-selling-plan") || "";
+    var color = button.getAttribute("data-product-color") || "";
     var src =
       origin +
       "/customize?shop=" +
@@ -103,7 +104,8 @@
       "&product=" +
       encodeURIComponent(productId) +
       "&embed=1&slot=modal" +
-      (designId ? "&design=" + encodeURIComponent(designId) : "");
+      (designId ? "&design=" + encodeURIComponent(designId) : "") +
+      (color ? "&color=" + encodeURIComponent(color) : "");
 
     var overlay = document.createElement("div");
     overlay.className = "bridgecustom-edit-modal";
