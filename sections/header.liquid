@@ -29,11 +29,13 @@
     assign transparent_text_color_setting = section.settings.text_color_transparent_collection
   endif
 
-  if section.settings.enable_sticky_header == 'always'
-    assign sticky = 'always'
-  elsif section.settings.enable_sticky_header == 'scroll-up'
-    assign sticky = 'scroll-up'
-  endif
+  unless template.name == 'product'
+    if section.settings.enable_sticky_header == 'always'
+      assign sticky = 'always'
+    elsif section.settings.enable_sticky_header == 'scroll-up'
+      assign sticky = 'scroll-up'
+    endif
+  endunless
 
   if transparent and sticky
     assign transparent = 'not-sticky'

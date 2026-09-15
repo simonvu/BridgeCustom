@@ -206,6 +206,8 @@
                       href="{{ item.url }}"
                       class="cart-items__media-container"
                       style="--ratio:{{ ratio }};"
+                      data-bc-zoom
+                      data-bc-zoom-src="{% if bc_preview != blank %}{{ bc_preview | escape }}{% endif %}"
                     >
                       {%- if bc_preview != blank -%}
                         <img
