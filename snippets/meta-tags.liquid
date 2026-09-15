@@ -11,7 +11,7 @@
 >
 <meta
   name="viewport"
-  content="width=device-width,initial-scale=1"
+  content="{% if request.page_type == 'product' %}width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover, interactive-widget=overlays-content{% else %}width=device-width, initial-scale=1{% endif %}"
 >
 <meta
   name="theme-color"
