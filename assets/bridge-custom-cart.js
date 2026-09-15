@@ -9,8 +9,10 @@
     style.textContent =
       ".bridgecustom-edit-design{display:inline-flex;align-items:center;gap:.4rem;margin:.55rem 0 0;padding:0;border:0;background:none;color:#334155;font-size:.8125rem;font-weight:600;cursor:pointer;text-decoration:underline;text-underline-offset:2px}" +
       ".cart-items__media-container[data-bc-zoom]{cursor:zoom-in}" +
-      ".bridgecustom-edit-modal{position:fixed;inset:0;z-index:2147483000;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(15,23,42,.55)}" +
-      ".bridgecustom-edit-modal__dialog{position:relative;width:min(1120px,100%);height:min(760px,92vh);background:#fff;border-radius:16px;box-shadow:0 24px 80px rgba(15,23,42,.35);overflow:hidden;display:flex;flex-direction:column}" +
+      "dialog.bridgecustom-edit-modal{position:fixed;inset:0;width:100%;max-width:none;height:100%;max-height:none;margin:0;padding:0;border:0;background:rgba(15,23,42,.55);z-index:2147483646;display:flex;align-items:center;justify-content:center}" +
+      "dialog.bridgecustom-edit-modal::backdrop{background:rgba(15,23,42,.55)}" +
+      ".bridgecustom-edit-modal__dialog{position:relative;width:min(1120px,100%);height:min(760px,100%);background:#fff;border-radius:16px;box-shadow:0 24px 80px rgba(15,23,42,.35);overflow:hidden;display:flex;flex-direction:column}" +
+      "@media (max-width:749px){dialog.bridgecustom-edit-modal{padding:0;background:#fff}.bridgecustom-edit-modal__dialog{width:100%;height:100%;max-height:none;border-radius:0}}" +
       ".bridgecustom-edit-modal__bar{display:flex;align-items:center;justify-content:center;position:relative;padding:14px 48px;border-bottom:1px solid #e2e8f0;font-weight:700;font-size:15px;color:#0f172a}" +
       ".bridgecustom-edit-modal__close{position:absolute;right:12px;top:50%;transform:translateY(-50%);width:36px;height:36px;border:0;background:none;font-size:22px;line-height:1;cursor:pointer;color:#64748b}" +
       ".bridgecustom-edit-modal__frame{flex:1;width:100%;border:0;background:#fff}" +
@@ -60,6 +62,11 @@
 
   function closeModal() {
     if (!activeModal) return;
+    if (typeof activeModal.close === "function") {
+      try {
+        activeModal.close();
+      } catch (err) {}
+    }
     activeModal.remove();
     activeModal = null;
     document.body.style.removeProperty("overflow");
@@ -145,10 +152,9 @@
       (designId ? "&design=" + encodeURIComponent(designId) : "") +
       (color ? "&color=" + encodeURIComponent(color) : "");
 
-    var overlay = document.createElement("div");
+    var overlay = document.createElement("dialog");
     overlay.className = "bridgecustom-edit-modal";
-    overlay.setAttribute("role", "dialog");
-    overlay.setAttribute("aria-modal", "true");
+    overlay.setAttribute("aria-label", "Edit Personalization");
     overlay.innerHTML =
       '<div class="bridgecustom-edit-modal__dialog">' +
       '<div class="bridgecustom-edit-modal__bar">Edit Personalization<button type="button" class="bridgecustom-edit-modal__close" aria-label="Close">&times;</button></div>' +
@@ -158,11 +164,17 @@
       "</div>";
     document.body.appendChild(overlay);
     document.body.style.overflow = "hidden";
+    if (typeof overlay.showModal === "function") overlay.showModal();
+    else overlay.setAttribute("open", "");
     activeModal = overlay;
 
     overlay.querySelector(".bridgecustom-edit-modal__close").addEventListener("click", closeModal);
     overlay.addEventListener("click", function (event) {
       if (event.target === overlay) closeModal();
+    });
+    overlay.addEventListener("cancel", function (event) {
+      event.preventDefault();
+      closeModal();
     });
 
     function onMessage(event) {
