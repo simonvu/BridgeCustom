@@ -12,7 +12,8 @@
       ".bridgecustom-edit-modal__dialog{position:relative;width:min(1120px,100%);height:min(760px,92vh);background:#fff;border-radius:16px;box-shadow:0 24px 80px rgba(15,23,42,.35);overflow:hidden;display:flex;flex-direction:column}" +
       ".bridgecustom-edit-modal__bar{display:flex;align-items:center;justify-content:center;position:relative;padding:14px 48px;border-bottom:1px solid #e2e8f0;font-weight:700;font-size:15px;color:#0f172a}" +
       ".bridgecustom-edit-modal__close{position:absolute;right:12px;top:50%;transform:translateY(-50%);width:36px;height:36px;border:0;background:none;font-size:22px;line-height:1;cursor:pointer;color:#64748b}" +
-      ".bridgecustom-edit-modal__frame{flex:1;width:100%;border:0;background:#fff}";
+      ".bridgecustom-edit-modal__frame{flex:1;width:100%;border:0;background:#fff}" +
+      ".bridgecustom-edit-modal__status{position:absolute;inset:auto 0 0 0;padding:10px 16px;background:#0f172a;color:#fff;font-size:13px;font-weight:600;text-align:center}";
     document.head.appendChild(style);
   }
 
@@ -23,6 +24,32 @@
       "https://app.bridgecustom.com"
     ).replace(/\/$/, "");
   }
+
+  function applyCartPreviewImages() {
+    fetch("/cart.js", { credentials: "same-origin", headers: { Accept: "application/json" } })
+      .then(function (res) {
+        return res.ok ? res.json() : null;
+      })
+      .then(function (cart) {
+        if (!cart || !cart.items) return;
+        cart.items.forEach(function (item) {
+          var props = item.properties || {};
+          var preview = props._bc_preview || props["_bc_preview"];
+          if (!preview) return;
+          document.querySelectorAll('[data-key="' + item.key + '"] .cart-items__media-image').forEach(function (img) {
+            if (img.getAttribute("src") !== preview) img.setAttribute("src", preview);
+          });
+        });
+      })
+      .catch(function () {});
+  }
+
+  document.addEventListener("DOMContentLoaded", applyCartPreviewImages);
+  document.addEventListener("shopify:section:load", applyCartPreviewImages);
+  window.setTimeout(applyCartPreviewImages, 400);
+  window.setTimeout(applyCartPreviewImages, 1600);
+  document.addEventListener("cart:updated", applyCartPreviewImages);
+  document.addEventListener("cart:change", applyCartPreviewImages);
 
   var activeModal = null;
 
@@ -103,7 +130,10 @@
       var data = event.data || {};
       if (data.type !== "bridgecustom:save-design") return;
       window.removeEventListener("message", onMessage);
-      closeModal();
+      var status = document.createElement("div");
+      status.className = "bridgecustom-edit-modal__status";
+      status.textContent = "Saving your design…";
+      overlay.querySelector(".bridgecustom-edit-modal__dialog").appendChild(status);
       replaceCartLine({
         lineKey: lineKey,
         variantId: variantId,
@@ -113,6 +143,7 @@
       }).catch(function (err) {
         console.error("Bridge Custom edit design", err);
         window.alert("Could not save the updated design. Please try again.");
+        closeModal();
       });
     }
     window.addEventListener("message", onMessage);
