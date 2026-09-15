@@ -40,6 +40,10 @@
   type="module"
   fetchpriority="low"
 ></script>
+<script
+  src="{{ 'bridge-custom-cart.js' | asset_url }}"
+  defer
+></script>
 
 {% render 'text-component-shimmer-styles' %}
 
@@ -140,6 +144,26 @@
 
           <tbody role="rowgroup">
             {% for item in cart.items %}
+              {%- liquid
+                assign bc_custom = false
+                assign bc_preview = ''
+                assign bc_design = ''
+                assign bc_app_origin = item.product.metafields.bridgecustom.customizer_url.value | default: '' | split: '/customize' | first
+                if bc_app_origin == blank
+                  assign bc_app_origin = 'https://app.bridgecustom.com'
+                endif
+                for property in item.properties
+                  if property.first == '_bc' and property.last != blank
+                    assign bc_custom = true
+                  endif
+                  if property.first == '_bc_preview' and property.last != blank
+                    assign bc_preview = property.last
+                  endif
+                  if property.first == '_bc_design' and property.last != blank
+                    assign bc_design = property.last
+                  endif
+                endfor
+              -%}
               <tr
                 id="CartItem-{{ item.key }}"
                 role="row"
@@ -153,7 +177,7 @@
                   role="cell"
                   headers="productImage"
                 >
-                  {% if item.image -%}
+                  {% if bc_preview != blank or item.image -%}
                     {% liquid
                       assign ratio = 1
                       assign border_opacity = settings.cart_thumbnail_border_opacity | divided_by: 100.0
@@ -164,7 +188,7 @@
                       endif
                       if block_settings.image_ratio == 'portrait'
                         assign ratio = 0.8
-                      elsif block_settings.image_ratio == 'adapt'
+                      elsif block_settings.image_ratio == 'adapt' and item.image
                         assign ratio = item.image.aspect_ratio
                       endif
                     %}
@@ -173,9 +197,21 @@
                       class="cart-items__media-container"
                       style="--ratio:{{ ratio }};"
                     >
-                      {%- liquid
-                        echo item.image | image_url: width: 250 | image_tag: class: 'cart-items__media-image border-style', style: border_override
-                      -%}
+                      {%- if bc_preview != blank -%}
+                        <img
+                          src="{{ bc_preview | escape }}"
+                          alt="{{ item.title | escape }}"
+                          class="cart-items__media-image border-style"
+                          style="{{ border_override }}"
+                          width="250"
+                          height="250"
+                          loading="lazy"
+                        >
+                      {%- else -%}
+                        {%- liquid
+                          echo item.image | image_url: width: 250 | image_tag: class: 'cart-items__media-image border-style', style: border_override
+                        -%}
+                      {%- endif -%}
                     </a>
                   {%- endif %}
                 </td>
@@ -292,6 +328,24 @@
                       {%- endif -%}
                     {%- endif -%}
                   </div>
+
+                  {%- if bc_custom -%}
+                    <button
+                      type="button"
+                      class="bridgecustom-edit-design"
+                      data-bc-edit
+                      data-app-origin="{{ bc_app_origin | escape }}"
+                      data-shop="{{ shop.permanent_domain }}"
+                      data-product-id="{{ item.product.id }}"
+                      data-design-id="{{ bc_design | escape }}"
+                      data-line-key="{{ item.key }}"
+                      data-variant-id="{{ item.variant_id }}"
+                      data-quantity="{{ item.quantity }}"
+                      data-selling-plan="{{ item.selling_plan_allocation.selling_plan.id | default: '' }}"
+                    >
+                      Edit Design
+                    </button>
+                  {%- endif -%}
 
                   <div class="cart-items__unit-price-wrapper">
                     <div>
@@ -437,6 +491,22 @@
 
   .cart-items-disabled {
     pointer-events: none;
+  }
+
+  .bridgecustom-edit-design {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin: 0.55rem 0 0;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: #334155;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 2px;
   }
 
   .cart-items__wrapper {

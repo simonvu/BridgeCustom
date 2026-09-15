@@ -71,6 +71,13 @@ export class AddToCartComponent extends Component {
     const form = this.closest('form');
     if (!form?.checkValidity()) return;
 
+    const validateCustom = window.__BRIDGECUSTOM_VALIDATE_ATC;
+    if (typeof validateCustom === 'function' && !validateCustom()) {
+      event.preventDefault();
+      event.stopPropagation();
+      return;
+    }
+
     // Check if adding would exceed max before animating
     const productForm = /** @type {ProductFormComponent | null} */ (this.closest('product-form-component'));
     const quantitySelector = productForm?.refs.quantitySelector;

@@ -59,7 +59,18 @@
 
   .bridgecustom-preview-pane.is-active {
     visibility: visible;
+    pointer-events: none;
+  }
+
+  slideshow-component.bc-live-preview-on slideshow-arrows {
+    z-index: 8;
+    pointer-events: none;
+  }
+
+  slideshow-component.bc-live-preview-on slideshow-arrows .slideshow-control {
     pointer-events: auto;
+    position: relative;
+    z-index: 8;
   }
 
   .bridgecustom-preview-host,
