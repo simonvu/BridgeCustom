@@ -44,7 +44,7 @@
   }
 
   var script = document.createElement("script");
-  script.src = origin + "/widget/customizer-widget-v19.js";
+  script.src = origin + "/widget/customizer-widget-v20.js";
   script.defer = true;
   script.onerror = function () {
     host.innerHTML =

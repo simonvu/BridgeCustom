@@ -16,8 +16,9 @@
       ".bridgecustom-edit-modal__frame{flex:1;width:100%;border:0;background:#fff}" +
       ".bridgecustom-edit-modal__status{position:absolute;inset:auto 0 0 0;padding:10px 16px;background:#0f172a;color:#fff;font-size:13px;font-weight:600;text-align:center}" +
       ".bridgecustom-zoom{position:fixed;inset:0;z-index:2147483001;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(15,23,42,.82)}" +
-      ".bridgecustom-zoom img{max-width:min(960px,100%);max-height:92vh;object-fit:contain;border-radius:12px;background:#fff;box-shadow:0 24px 80px rgba(15,23,42,.45)}" +
-      ".bridgecustom-zoom__close{position:absolute;top:12px;right:12px;width:40px;height:40px;border:0;border-radius:999px;background:#fff;color:#0f172a;font-size:24px;line-height:1;cursor:pointer}";
+      ".bridgecustom-zoom__card{position:relative;max-width:min(960px,calc(100vw - 32px));max-height:92vh}" +
+      ".bridgecustom-zoom__card img{display:block;max-width:100%;max-height:92vh;object-fit:contain;border-radius:12px;background:#fff;box-shadow:0 24px 80px rgba(15,23,42,.45)}" +
+      ".bridgecustom-zoom__close{position:absolute;top:8px;right:8px;z-index:2;width:36px;height:36px;display:flex;align-items:center;justify-content:center;padding:0;border:0;border-radius:999px;background:#fff;color:#0f172a;font-size:22px;line-height:1;cursor:pointer;box-shadow:0 4px 16px rgba(15,23,42,.18)}";
     document.head.appendChild(style);
   }
 
@@ -79,11 +80,11 @@
     overlay.setAttribute("role", "dialog");
     overlay.setAttribute("aria-modal", "true");
     overlay.innerHTML =
-      '<button type="button" class="bridgecustom-zoom__close" aria-label="Close">&times;</button><img src="' +
+      '<div class="bridgecustom-zoom__card"><button type="button" class="bridgecustom-zoom__close" aria-label="Close">&times;</button><img src="' +
       String(src).replace(/"/g, "&quot;") +
       '" alt="' +
       String(alt || "").replace(/"/g, "&quot;") +
-      '">';
+      '"></div>';
     overlay.addEventListener("click", function (event) {
       if (event.target === overlay || (event.target.closest && event.target.closest(".bridgecustom-zoom__close"))) {
         closeImageZoom();
